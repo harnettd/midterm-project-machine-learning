@@ -55,7 +55,7 @@ def load_jsons(json_basenames: list[str], dirname: str) -> list:
 
 def filter_house_properties(city: dict) -> list[dict]:
     """
-    Filter the potentially relevant features from json_obj.
+    Filter the potentially relevant features from city.
     """
     try:
         houses: list[dict] = city['data']['results'] 
@@ -76,6 +76,34 @@ def filter_house_properties(city: dict) -> list[dict]:
     return house_data
 
 
+def parse_location(house: dict) -> dict:
+    """
+    Return a house dictionary with 'location' parsed.
+    """
+    if 'location' not in house.keys():
+        return house
+    
+    house_copy: dict = house.copy()
+    location: dict = house_copy.pop('location')
+
+    if 'address' not in location.keys():
+        return house
+
+    address: dict = location['address']   
+    loc_data = {
+        'postal_code': address.get('postal_code'),
+        'state': address.get('state'),
+        'city': address.get('city')
+    }
+
+    coordinate = address.get('coordinate')
+    if coordinate is not None:
+            loc_data['lon'] = coordinate.get('lon')
+            loc_data['lat'] = coordinate.get('lat')
+
+    return {**house_copy, **loc_data}
+
+
 def flatten_description(house: dict) -> dict:
     """
     Return a house dictionary with 'description' flattened.
@@ -83,8 +111,9 @@ def flatten_description(house: dict) -> dict:
     if 'description' not in house.keys():
         return house
 
-    description = house.pop('description')
-    return {**house, **description}
+    house_copy = house.copy()
+    description = house_copy.pop('description')
+    return {**house_copy, **description}
 
 
 def load_data(dirname) -> pd.DataFrame:
@@ -100,8 +129,11 @@ def load_data(dirname) -> pd.DataFrame:
         city_house_data = filter_house_properties(city)
         all_house_data.extend(city_house_data)
 
-    for house in all_house_data:
-        house = flatten_description(house)
+    all_house_data =\
+        [flatten_description(house) for house in all_house_data]
+    
+    all_house_data =\
+        [parse_location(house) for house in all_house_data]
 
     return all_house_data
     
@@ -111,4 +143,10 @@ if __name__ == '__main__':
     data: list = load_data('data/raw/')
     print(f'type: {type(data)}')
     print(f'length: {len(data)}')
-    # print(data[0])
+    idx = 100
+    print()
+    print(data[idx])
+    # print()
+    # print(flatten_description(data[idx]))
+    # print()
+    # print(parse_location(data[idx]))
