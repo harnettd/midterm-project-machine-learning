@@ -76,6 +76,17 @@ def filter_house_properties(city: dict) -> list[dict]:
     return house_data
 
 
+def flatten_description(house: dict) -> dict:
+    """
+    Return a house dictionary with 'description' flattened.
+    """
+    if 'description' not in house.keys():
+        return house
+
+    description = house.pop('description')
+    return {**house, **description}
+
+
 def load_data(dirname) -> pd.DataFrame:
     """
     Meh.
@@ -89,6 +100,9 @@ def load_data(dirname) -> pd.DataFrame:
         city_house_data = filter_house_properties(city)
         all_house_data.extend(city_house_data)
 
+    for house in all_house_data:
+        house = flatten_description(house)
+
     return all_house_data
     
 
@@ -97,4 +111,4 @@ if __name__ == '__main__':
     data: list = load_data('data/raw/')
     print(f'type: {type(data)}')
     print(f'length: {len(data)}')
-    print(data[0])
+    # print(data[0])
