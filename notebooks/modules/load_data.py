@@ -169,15 +169,11 @@ def load_data(dirname) -> pd.DataFrame:
     all_house_data =\
         [flatten_flags(house) for house in all_house_data]
 
-    return all_house_data
+    all_house_df = pd.DataFrame(all_house_data)
+    return all_house_df
     
 
 if __name__ == '__main__':
     # print(__doc__)
-    data: list = load_data('data/raw/')
-    print(f'type: {type(data)}')
-    print(f'length: {len(data)}')
-    idx = 5000
-    print()
-    print(len(data))
- 
+    data = load_data()
+    print(data.shape)
