@@ -53,14 +53,13 @@ def load_jsons(json_basenames: list[str], dirname: str) -> list:
     return jsons
 
 
-def filter_house_properties(city: dict) -> list[dict]:
+def filter_house_properties(city: dict) -> list[dict] | None:
     """
-    Filter the potentially relevant features from city.
+    Filter the potentially relevant house features from city.
     """
     try:
         houses: list[dict] = city['data']['results'] 
     except KeyError:
-        print(f'KeyError: there are no houses')
         return None
     
     # a list of house properties worth keeping
@@ -74,6 +73,48 @@ def filter_house_properties(city: dict) -> list[dict]:
         house_data.append(house_props)
 
     return house_data
+
+
+def flatten_description(house: dict) -> dict:
+    """
+    Return a house dictionary with 'description' flattened.
+    """
+    house_copy: dict = house.copy()
+    try:
+        description: dict = house_copy.pop('description')
+    except KeyError:
+        return house
+    else:
+        return {**house_copy, **description}
+
+
+def flatten_flags(house: dict) -> dict:
+    """
+    Return a house dictionary with 'flags' flattened.
+    """
+    house_copy: dict = house.copy()
+    try:
+        flags: dict = house_copy.pop('flags')
+    except KeyError:
+        return house
+    else:
+        return {**house_copy, **flags}
+
+
+def parse_tags(house: dict) -> dict:
+    """
+    Return a house dictionary with 'tags' parsed.
+    """
+    if 'tags' not in house.keys():
+        return house
+    
+    house_copy: dict = house.copy()
+    tags: list = house_copy.pop('tags')
+    if tags is None:
+        return house
+    
+    tags_dict = {tag: True for tag in tags}
+    return {**house_copy, **tags_dict}
 
 
 def parse_location(house: dict) -> dict:
@@ -104,46 +145,6 @@ def parse_location(house: dict) -> dict:
     return {**house_copy, **loc_data}
 
 
-def flatten_description(house: dict) -> dict:
-    """
-    Return a house dictionary with 'description' flattened.
-    """
-    if 'description' not in house.keys():
-        return house
-
-    house_copy: dict = house.copy()
-    description: dict = house_copy.pop('description')
-    return {**house_copy, **description}
-
-
-def parse_tags(house: dict) -> dict:
-    """
-    Return a house dictionary with 'tags' parsed.
-    """
-    if 'tags' not in house.keys():
-        return house
-    
-    house_copy: dict = house.copy()
-    tags: list = house_copy.pop('tags')
-    if tags is None:
-        return house
-    
-    tags_dict = {tag: True for tag in tags}
-    return {**house_copy, **tags_dict}
-
-
-def flatten_flags(house: dict) -> dict:
-    """
-    Return a house dictionary with 'flags' flattened.
-    """
-    if 'flags' not in house.keys():
-        return house
-    
-    house_copy: dict = house.copy()
-    flags: list = house_copy.pop('flags')
-    return {**house_copy, **flags}
-
-
 def load_data(dirname) -> pd.DataFrame:
     """
     Meh.
@@ -161,13 +162,13 @@ def load_data(dirname) -> pd.DataFrame:
         [flatten_description(house) for house in all_house_data]
     
     all_house_data =\
+        [flatten_flags(house) for house in all_house_data]
+    
+    all_house_data =\
         [parse_location(house) for house in all_house_data]
     
     all_house_data =\
         [parse_tags(house) for house in all_house_data]
-    
-    all_house_data =\
-        [flatten_flags(house) for house in all_house_data]
 
     all_house_df = pd.DataFrame(all_house_data)
     return all_house_df
@@ -175,5 +176,5 @@ def load_data(dirname) -> pd.DataFrame:
 
 if __name__ == '__main__':
     # print(__doc__)
-    data = load_data()
+    data = load_data('data/raw/')
     print(data.shape)
