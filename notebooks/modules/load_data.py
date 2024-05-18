@@ -132,6 +132,18 @@ def parse_tags(house: dict) -> dict:
     return {**house_copy, **tags_dict}
 
 
+def flatten_flags(house: dict) -> dict:
+    """
+    Return a house dictionary with 'flags' flattened.
+    """
+    if 'flags' not in house.keys():
+        return house
+    
+    house_copy: dict = house.copy()
+    flags: list = house_copy.pop('flags')
+    return {**house_copy, **flags}
+
+
 def load_data(dirname) -> pd.DataFrame:
     """
     Meh.
@@ -153,6 +165,9 @@ def load_data(dirname) -> pd.DataFrame:
     
     all_house_data =\
         [parse_tags(house) for house in all_house_data]
+    
+    all_house_data =\
+        [flatten_flags(house) for house in all_house_data]
 
     return all_house_data
     
@@ -162,7 +177,7 @@ if __name__ == '__main__':
     data: list = load_data('data/raw/')
     print(f'type: {type(data)}')
     print(f'length: {len(data)}')
-    idx = 1000
+    idx = 5000
     print()
-    print(data[idx])
+    print(len(data))
  
