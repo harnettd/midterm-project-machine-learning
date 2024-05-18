@@ -111,9 +111,25 @@ def flatten_description(house: dict) -> dict:
     if 'description' not in house.keys():
         return house
 
-    house_copy = house.copy()
-    description = house_copy.pop('description')
+    house_copy: dict = house.copy()
+    description: dict = house_copy.pop('description')
     return {**house_copy, **description}
+
+
+def parse_tags(house: dict) -> dict:
+    """
+    Return a house dictionary with 'tags' parsed.
+    """
+    if 'tags' not in house.keys():
+        return house
+    
+    house_copy: dict = house.copy()
+    tags: list = house_copy.pop('tags')
+    if tags is None:
+        return house
+    
+    tags_dict = {tag: True for tag in tags}
+    return {**house_copy, **tags_dict}
 
 
 def load_data(dirname) -> pd.DataFrame:
@@ -134,6 +150,9 @@ def load_data(dirname) -> pd.DataFrame:
     
     all_house_data =\
         [parse_location(house) for house in all_house_data]
+    
+    all_house_data =\
+        [parse_tags(house) for house in all_house_data]
 
     return all_house_data
     
@@ -143,10 +162,7 @@ if __name__ == '__main__':
     data: list = load_data('data/raw/')
     print(f'type: {type(data)}')
     print(f'length: {len(data)}')
-    idx = 100
+    idx = 1000
     print()
     print(data[idx])
-    # print()
-    # print(flatten_description(data[idx]))
-    # print()
-    # print(parse_location(data[idx]))
+ 
