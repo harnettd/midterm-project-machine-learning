@@ -53,17 +53,48 @@ def load_jsons(json_basenames: list[str], dirname: str) -> list:
     return jsons
 
 
+def filter_house_properties(city: dict) -> list[dict]:
+    """
+    Filter the potentially relevant features from json_obj.
+    """
+    try:
+        houses: list[dict] = city['data']['results'] 
+    except KeyError:
+        print(f'KeyError: there are no houses')
+        return None
+    
+    # a list of house properties worth keeping
+    keepers = ['property_id', 'status', 'list_date', 
+               'location', 'description', 'tags',
+               'flags', 'community', 'open_houses']
+    
+    house_data = []
+    for house in houses:
+        house_props = {k: house.get(k) for k in keepers}
+        house_data.append(house_props)
+
+    return house_data
+
+
 def load_data(dirname) -> pd.DataFrame:
     """
     Meh.
     """ 
-    basenames = listdir(path=dirname)
-    json_basenames = get_json_basenames(basenames)    
-    jsons = load_jsons(json_basenames, dirname)
+    basenames: list[str] = listdir(path=dirname)
+    json_basenames: list[str] = get_json_basenames(basenames)    
+    cities: list[dict] = load_jsons(json_basenames, dirname)
     
-    return jsons
+    all_house_data = []
+    for city in cities:
+        city_house_data = filter_house_properties(city)
+        all_house_data.extend(city_house_data)
+
+    return all_house_data
     
 
 if __name__ == '__main__':
     # print(__doc__)
-    data = load_data('data/raw/')
+    data: list = load_data('data/raw/')
+    print(f'type: {type(data)}')
+    print(f'length: {len(data)}')
+    print(data[0])
