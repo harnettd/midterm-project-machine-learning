@@ -5,7 +5,7 @@ import json
 import re 
 import pandas as pd
 
-from os import listdir
+from os import getcwd, listdir
 
 
 def get_json_basenames(basenames: list[str]) -> list[str]:
@@ -104,16 +104,17 @@ def flatten_flags(house: dict) -> dict:
 def parse_tags(house: dict) -> dict:
     """
     Return a house dictionary with 'tags' parsed.
-    """
-    if 'tags' not in house.keys():
-        return house
-    
+    """    
     house_copy: dict = house.copy()
-    tags: list = house_copy.pop('tags')
-    if tags is None:
-        return house
+    try:
+        tags: list = house_copy.pop('tags')
+    except KeyError:
+        return house 
+    else:
+        if tags is None:
+            tags = []
+        tags_dict = {tag: True for tag in tags}
     
-    tags_dict = {tag: True for tag in tags}
     return {**house_copy, **tags_dict}
 
 
@@ -121,26 +122,22 @@ def parse_location(house: dict) -> dict:
     """
     Return a house dictionary with 'location' parsed.
     """
-    if 'location' not in house.keys():
-        return house
-    
     house_copy: dict = house.copy()
-    location: dict = house_copy.pop('location')
-
-    if 'address' not in location.keys():
+    try:
+        address: dict = house_copy['location'].pop('address')
+    except KeyError:
         return house
+    else:   
+        loc_data = {
+            'postal_code': address.get('postal_code'),
+            'state': address.get('state'),
+            'city': address.get('city')
+        }
 
-    address: dict = location['address']   
-    loc_data = {
-        'postal_code': address.get('postal_code'),
-        'state': address.get('state'),
-        'city': address.get('city')
-    }
-
-    coordinate = address.get('coordinate')
-    if coordinate is not None:
-            loc_data['lon'] = coordinate.get('lon')
-            loc_data['lat'] = coordinate.get('lat')
+        coordinate = address.get('coordinate')
+        if coordinate is not None:
+                loc_data['lon'] = coordinate.get('lon')
+                loc_data['lat'] = coordinate.get('lat')
 
     return {**house_copy, **loc_data}
 
@@ -175,6 +172,6 @@ def load_data(dirname) -> pd.DataFrame:
     
 
 if __name__ == '__main__':
-    # print(__doc__)
-    data = load_data('data/raw/')
-    print(data.shape)
+    data_dirname = 'data/'
+    data_df = load_data(data_dirname + 'raw/')
+    data_df.to_csv(data_dirname + 'processed/housing_data_0.csv', sep=',')
