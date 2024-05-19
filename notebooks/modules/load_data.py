@@ -61,8 +61,8 @@ def filter_house_properties(city: dict) -> list[dict] | None:
     """
     Filter the potentially relevant house features from city.
 
-    Keep information on listing ID, status, list date, location,
-    description, tags, flags, community, and open_houses.
+    Keep information on property ID, listing ID, status, list date, 
+    location, description, tags, flags, community, and open_houses.
 
     :param city: A particular city (or part thereof)
     :type city: dict
@@ -76,7 +76,7 @@ def filter_house_properties(city: dict) -> list[dict] | None:
         return None
     
     # a list of house properties worth keeping
-    keepers = ['listing_id', 'status', 'list_date', 
+    keepers = ['property_id', 'listing_id', 'status', 'list_date', 
                'location', 'description', 'tags',
                'flags', 'community', 'open_houses']
     
@@ -150,24 +150,33 @@ def parse_location(house: dict) -> dict:
     """
     house_copy: dict = house.copy()
     try:
-        address: dict = house_copy['location'].pop('address')
+        location = house_copy.pop('location')
     except KeyError:
         return house
-    else:   
-        loc_data = {
-            'postal_code': address.get('postal_code'),
-            'state': address.get('state'),
-            'city': address.get('city')
-        }
+    if location is None:
+        return house
+    
+    try:
+        address: dict = location['address']
+    except KeyError:
+        return house    
+    if address is None:
+        return house
+    
+    loc_data = {
+        'postal_code': address.get('postal_code'),
+        'state': address.get('state'),
+        'city': address.get('city')
+    }
 
-        try:
-            coordinate = address['coordinate']
-        except KeyError:
-            pass
-        else:
-            if coordinate is not None:
-                loc_data['lon'] = coordinate['lon']
-                loc_data['lat'] = coordinate['lat']
+    try:
+        coordinate = address['coordinate']
+    except KeyError:
+        pass
+    else:
+        if coordinate is not None:
+            loc_data['lon'] = coordinate['lon']
+            loc_data['lat'] = coordinate['lat']
 
     return {**house_copy, **loc_data}
 
@@ -220,4 +229,9 @@ if __name__ == '__main__':
     # Load housing data, process it (a bit!), and then export to CSV.
     data_dirname = 'data/'
     data_df = load_data(data_dirname + 'raw/')
-    data_df.to_csv(data_dirname + 'processed/housing_data_0.csv', sep=',')
+    data_df.to_csv(
+        data_dirname + 'processed/housing_data_0.csv', 
+        sep=',', 
+        header=True,
+        index=False
+    )
