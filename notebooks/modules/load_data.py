@@ -62,7 +62,8 @@ def filter_house_properties(city: dict) -> list[dict] | None:
     Filter the potentially relevant house features from city.
 
     Keep information on property ID, listing ID, status, list date, 
-    location, description, tags, flags, community, and open_houses.
+    location, description, tags, flags, price reduction, community, 
+    and open_houses.
 
     :param city: A particular city (or part thereof)
     :type city: dict
@@ -77,7 +78,7 @@ def filter_house_properties(city: dict) -> list[dict] | None:
     
     # a list of house properties worth keeping
     keepers = ['property_id', 'listing_id', 'status', 'list_date', 
-               'location', 'description', 'tags',
+               'location', 'description', 'tags', 'price_reduced_amount',
                'flags', 'community', 'open_houses']
     
     house_data = []
