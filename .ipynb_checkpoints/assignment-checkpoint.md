@@ -11,7 +11,7 @@ Your tasks are as follows:
 
 Complete the **1 - EDA.ipynb** notebook to demonstrate how you executed the tasks above. 
 
-## Part 2: Model Selection 
+## Part 2: Model Selection
 
 1. Try a variety of supervized learning models on your preprocessed data
 2. Decide on your criteria for model selection - what metrics are most important in this context? Describe your reasoning 
