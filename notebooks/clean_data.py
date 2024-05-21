@@ -1,5 +1,5 @@
 """
-Function that help with data cleaning.
+Functions that help with data cleaning.
 """
 import pandas as pd
 
@@ -62,6 +62,37 @@ def or_merge(
     df_copy = df_copy.drop(columns=old_columns)
     
     return df_copy 
+
+
+def trim_outliers(
+        df: pd.DataFrame, 
+        columns: list[str]
+) -> pd.DataFrame:
+    """
+    Return a DataFrame with outliers trimmed from columns.
+
+    Use the IQR method to trim outliers.
+
+    :param df: A DataFrame
+    :type df: pd.DataFrame
+
+    :param old_columns: A list of columns that may contain outliers
+    :param old_params: list[str]
+    """
+    df_subset = df[columns]
+
+    describe = df_subset.describe() 
+    first_quartile = describe.loc['25%', :]
+    third_quartile = describe.loc['75%', :]
+    iqr = third_quartile - first_quartile
+    
+    lower_bound = first_quartile - 1.5 * iqr
+    upper_bound = third_quartile + 1.5 * iqr  
+    lower_filter = df_subset >= lower_bound
+    upper_filter = df_subset <= upper_bound
+    filter = (lower_filter & upper_filter).all(axis=1)
+
+    return df[filter]
 
 
 if __name__ == '__main__':
