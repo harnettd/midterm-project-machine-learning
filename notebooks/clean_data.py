@@ -31,47 +31,38 @@ def get_nearly_empty_columns(
     return empty_cols
 
 
-def impute(df: pd.DataFrame, imputes: dict) -> pd.DataFrame:
-    pass
-
-
-def impute_with_false(ser: pd.Series) -> pd.Series:
+def or_merge(
+    df: pd.DataFrame,
+    old_columns: list[str],
+    new_column: str
+) -> pd.DataFrame:
     """
-    Return a Series with each NA replaces by False.
+    Return a DataFrame with columns combined to a new column using `or'.
+
+    :param df: A DataFrame
+    :type df: pd.DataFrame
+
+    :param old_columns: A list of columns to bemerged using 'or'
+    :param old_params: list[str]
+
+    :param new_column: The name for the new, merged column
+    :param type: str
+
+    :return: A DataFrame with merged columns
+    :rtype: pd.DataFrame
     """
-    return ser.fillna(False)
+    df_copy = df.copy()
+    
+    # Generate the new column.
+    df_copy[new_column] = False
+    for column in old_columns:
+        df_copy[new_column] = df_copy[new_column] | df_copy[column]
 
-
-def impute_with_zero(ser: pd.Series) -> pd.Series:
-    """
-    Return a Series with each NA replaces by 0.
-    """
-    return ser.fillna(0)
-
-
-def impute_with_median(ser: pd.Series) -> pd.Series:
-    """
-    Return a Series with each NA replaced by the Series's median.
-    """
-    median = ser.median()
-    return ser.fillna(median)
-
-
-def impute_with_mode(ser: pd.Series) -> pd.Series:
-    """
-    Return a Series with each NA replaced by the Series's median.
-    """
-    mode = ser.mode()[0]
-    return ser.fillna(mode)
-
-
-def impute_with_city(ser: pd.Series) -> pd.Series:
-    pass
+    # Drop the old columns.
+    df_copy = df_copy.drop(columns=old_columns)
+    
+    return df_copy 
 
 
 if __name__ == '__main__':
     print(__doc__)
-    df = pd.read_csv('data/processed/housing_data_0.csv', sep=',')
-
-    cols = get_nearly_empty_columns(df)
-    print(df.shape, cols)
