@@ -136,6 +136,32 @@ def get_seasons(dates: pd.Series) -> pd.Series:
     return dates.dt.month.apply(month_to_season)
 
 
+def median_by_postal_code(df: pd.DataFrame, sold_prices: pd.Series) -> pd.Series:
+    """
+    Return a Series of median sale prices by postal code.
+
+    :param df: A DataFrame with 'postal_code' as a column
+    :type df: pd.DataFrame
+
+    :param sold_prices: A Series of home sale prices
+    :type sold_prices: pd.Series
+
+    :return: A Series of median sales prices by postal code
+    :rtype: pd.Series
+    """
+    assert 'postal_code' in df.columns.to_list()
+    assert sold_prices.name == 'sold_price'
+
+    # Construct a DataFrame with 'sold_price' and 'postal_code' columns
+    sp_and_pc = pd.DataFrame([sold_prices, df['postal_code']]).T
+    sp_and_pc['postal_code'] = sp_and_pc['postal_code'].astype('int')
+
+    # Compute all median sale prices by postal code.
+    median_sp_by_pc = sp_and_pc.groupby(by='postal_code').median()
+
+    return df['postal_code'].apply(lambda pc: median_sp_by_pc.loc[pc])
+
+
 
 if __name__ == '__main__':
     print(__doc__)
