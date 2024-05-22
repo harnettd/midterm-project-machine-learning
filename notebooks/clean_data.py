@@ -31,39 +31,6 @@ def get_nearly_empty_columns(
     return empty_cols
 
 
-def or_merge(
-    df: pd.DataFrame,
-    old_columns: list[str],
-    new_column: str
-) -> pd.DataFrame:
-    """
-    Return a DataFrame with columns combined to a new column using `or'.
-
-    :param df: A DataFrame
-    :type df: pd.DataFrame
-
-    :param old_columns: A list of columns to bemerged using 'or'
-    :param old_params: list[str]
-
-    :param new_column: The name for the new, merged column
-    :param type: str
-
-    :return: A DataFrame with merged columns
-    :rtype: pd.DataFrame
-    """
-    df_copy = df.copy()
-    
-    # Generate the new column.
-    df_copy[new_column] = False
-    for column in old_columns:
-        df_copy[new_column] = df_copy[new_column] | df_copy[column]
-
-    # Drop the old columns.
-    df_copy = df_copy.drop(columns=old_columns)
-    
-    return df_copy 
-
-
 def trim_outliers(
         df: pd.DataFrame, 
         columns: list[str]
