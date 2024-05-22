@@ -3,6 +3,8 @@ Functions that help with data cleaning.
 """
 import pandas as pd
 
+from datetime import date
+
 
 def get_nearly_empty_columns(
         df: pd.DataFrame, 
@@ -93,6 +95,46 @@ def trim_outliers(
     filter = (lower_filter & upper_filter).all(axis=1)
 
     return df[filter]
+
+
+def month_to_season(month: int) -> str:
+    """
+    Return the season corresponding to a month.
+
+    Assumes that spring is Mar-May, summer is Jun-Aug,
+    autumn is Sept-Nov, and winter is Dec-Feb.
+
+    :param month: A month as an integer from 1-12
+    :type month: int
+
+    :return: The season corrsponding to month
+    :rtype: str
+    """
+    assert month in list(range(1, 13))
+
+    months_of_seasons = {
+        'spring': [3, 4, 5],
+        'summer': [6, 7, 8],
+        'autumn': [9, 10, 11],
+        'winter': [12, 1, 2]
+    }
+    for season in months_of_seasons:
+        if month in months_of_seasons[season]:
+            return season
+
+
+def get_seasons(dates: pd.Series) -> pd.Series:
+    """
+    Return a Series whose elements are seasons.
+
+    :param dates: A series of dates
+    :type dates: pd.Series
+
+    :return: A series of seasons
+    :rtype: pd.Series
+    """
+    return dates.dt.month.apply(month_to_season)
+
 
 
 if __name__ == '__main__':
