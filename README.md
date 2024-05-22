@@ -17,7 +17,7 @@ We also engineered a handful of new features. Some features were engineered by c
 
 We one-hot encoded categorical features and converted Boolean features to integer features in preparation for a machine-learning analysis.
 
-We plotted some univariate EDA visualizations, *i.e.,* box plots and histograms. From these, we noticed that our dataset contained many outliers. Rather than trim them all, we decided to trim those outliers stemming from features with at least a moderate correlation with home sales price (erring on the side of caution). Choosing those features was an iterative process based on correlation matrix elements and heat maps, 
+We plotted some univariate EDA visualizations, *i.e.,* box plots and histograms. From these, we noticed that our dataset contained many outliers. Rather than trim them all, we decided to trim those outliers stemming from features with at least a moderate correlation with home sales price (erring on the side of caution). Choosing those features was an iterative process based on correlation matrix elements and heat maps.
 
 ### (your step 2)
 
