@@ -1,4 +1,4 @@
-# Data Science Midterm Project: Predicting House Prices
+# Data Science Midterm Project: Predicting US House Prices
 
 ## Project/Goals
 
@@ -18,6 +18,10 @@ We also engineered a handful of new features. Some features were engineered by c
 We one-hot encoded categorical features and converted Boolean features to integer features in preparation for a machine-learning analysis.
 
 We plotted some univariate EDA visualizations, *i.e.,* box plots and histograms. From these, we noticed that our dataset contained many outliers. Rather than trim them all, we decided to trim those outliers stemming from features with at least a moderate correlation with home sales price (erring on the side of caution). Choosing those features was an iterative process based on correlation matrix elements and heat maps.
+
+Next, we split our data into training and testing sets. In addition we engineered the median-sold-price-by-postal-code feature discussed earlier. Again, this feature had to be separately added to the training and testing datasets to avoid data leakage. Afterwards, the training and testing datasets were exported to CSVs.
+
+Finally, we did some multivariate EDA in an affort to understand which features might be the most significant in predicting home sales prices. We produced a heat map of the features + target correlation matrix, and plotted several scatter plots as feature-selection aids.
 
 ### (your step 2)
 
