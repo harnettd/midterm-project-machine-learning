@@ -44,15 +44,5 @@ def print_scores(
     print(f'Adj R**2 test: {adj_r2_score(X_test, y_test, y_test_pred)}')
 
 
-def make_coef_dict(X: pd.DataFrame, coefs: ndarray) -> dict:
-    """
-    Return a feature-regression coefficient dictionary.
-    """
-    columns = X.columns.to_list()
-    fc_dict = {}
-    for (feature, coef) in zip(columns, coefs):
-        fc_dict[feature] = coef
-
-
 if __name__ == '__main__':
     print(__doc__)
