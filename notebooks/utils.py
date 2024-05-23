@@ -1,5 +1,5 @@
 """
-Some utility functions.
+Various utility functions to help with regression analyses.
 """
 import pandas as pd
 from numpy import ndarray, sqrt
@@ -42,6 +42,38 @@ def print_scores(
     print(f'R**2 test: {r2_score(y_test, y_test_pred)}')
     print(f'Adj R**2 train: {adj_r2_score(X_train, y_train, y_train_pred)}')
     print(f'Adj R**2 test: {adj_r2_score(X_test, y_test, y_test_pred)}')
+
+
+def run_regression(
+    train: [ndarray, ndarray],
+    test: [ndarray, ndarray],
+    regressor
+):
+    """
+    Return a fitted regressor.
+
+    Fit the regressor and print out a variety of test score.
+
+    :param train: [X_train, y_train]
+    :param test: [X_test, y_train]
+    :param regressor: a regression model instance such as LinearRegression()
+
+    :return: A fitted regression model
+    """
+    X_train, y_train = train
+    X_test, y_test = test
+
+    regressor.fit(X_train, y_train)
+
+    y_train_pred = regressor.predict(X_train)
+    y_test_pred = regressor.predict(X_test)
+
+    print_scores(
+        [X_train, y_train, y_train_pred], 
+        [X_test, y_test, y_test_pred]
+    )
+
+    return regressor
 
 
 if __name__ == '__main__':
