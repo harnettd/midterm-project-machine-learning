@@ -45,8 +45,13 @@ Adding to above scores, r-square can give us further insights. this metric gives
 #### Random Forest
 For further analysis, this model scores two metrics: RMSE and R-square. On RMSE, the model scores 18,785 and 51,995 on both training and test respectively. On R-square, it scores 0.98 and 0.92 on both train and test data set respectively. RMSE metric still shows no improvement but using a different metric (R-quare) turns to be a better option. 
 
-### (your step 3)
+### Cross Validation and Parameter Hypertuning
 
+Because it performed well, we chose the SVM model for fine tuning and deployment.
+
+For cross validation, we were unable to use built-in Scikit-Learn modules as they would have led to leakage. The issue again comes back to the feature "median home price by postal code" which, of course, is an aggregation. Aggregating over the entire dataset would lead to leakage between training and validation data subsets. Instead, we partitioned the data into five training-validation folds, and, *within each training fold,* engineered the median-home-price in question.   
+
+For hyperparameter tuning, we looped over a collection of hyperparameter settings and computed R-squared scores for each training-validation fold. Averaging over the five scores gave us an aggregate score for the hyperparameter collection in question. Finally, we chose the model with highest average R-squared and pickled it to file for the sake of posterity. 
 
 
 ## Results
