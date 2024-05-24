@@ -3,8 +3,8 @@ Various utility functions to help with regression analyses.
 """
 import pandas as pd
 from numpy import ndarray, sqrt
+from numpy.random import shuffle
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-
 
 def adj_r2_score(
     X: ndarray, 
@@ -74,6 +74,55 @@ def run_regression(
     )
 
     return regressor
+
+
+def partition(indices: list[int], n_splits: int) -> list[list]:
+    """
+    Partition a list into n_splits (nearly) equal-length sublists.
+
+    :param indices: A list of integers
+    :type indices: list[int]
+
+    :return: A partition of indices (shuffled) of n_splits
+    :rtype: list[list]
+    """
+    partitions = []
+    num_per_partition = len(indices) // n_splits
+
+    shuffle(indices)
+    
+    for n in range(n_splits - 1):
+        start = n * num_per_partition
+        stop = (n + 1) * num_per_partition
+        partitions.append(indices[start:stop])
+    partitions.append(indices[stop:])
+
+    return partitions
+
+
+def flatten(x: list[list]) -> list:
+    """
+    Return a flattened list.
+    """
+    y = []
+    for z in x:
+        y.extend(z)
+    return y
+
+
+def make_index_folds(index_partition: list[list]) -> list[list]:
+    """
+    Return a collection of train-validate folds
+    """
+    train_validate = []
+    
+    for p in range(len(index_partition)):
+        tmp = index_partition.copy()
+        validate = tmp.pop(p)
+        train = flatten(tmp)
+        train_validate.append([train, validate])
+
+    return train_validate 
 
 
 if __name__ == '__main__':
