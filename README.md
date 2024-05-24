@@ -6,6 +6,7 @@ The goal of this project was to develop and deploy a machine-learning algorithm 
 
 ## Process
 
+![Process Flowchart](images/ml-midterm-process-dia.drawio.png)
 
 ### Collect and Clean Data
 
@@ -44,22 +45,43 @@ Adding to above scores, r-square can give us further insights. this metric gives
 #### Random Forest
 For further analysis, this model scores two metrics: RMSE and R-square. On RMSE, the model scores 18,785 and 51,995 on both training and test respectively. On R-square, it scores 0.98 and 0.92 on both train and test data set respectively. RMSE metric still shows no improvement but using a different metric (R-quare) turns to be a better option. 
 
-### (your step 3)
+### Cross Validation and Parameter Hypertuning
 
+Because it performed well, we chose the SVM model for fine tuning and deployment.
+
+For cross validation, we were unable to use built-in Scikit-Learn classes as they would have led to data leakage. The issue again comes back to the feature "median home price by postal code" which, of course, is an aggregation. Aggregating over the entire dataset would lead to leakage between training and validation data subsets. Instead, we partitioned the data into five training-validation folds, and, *within each training fold,* engineered the median-home-price in question.   
+
+For hyperparameter tuning, we looped over a collection of hyperparameter settings and computed R-squared scores for each training-validation fold. Averaging over the five scores gave us an aggregate score for the hyperparameter collection in question. Finally, we chose the model with highest average R-squared and pickled it to file for the sake of posterity. 
 
 
 ## Results
-(fill in how your model performed)
 
+Here, we show a heat map of the correlation matrix between home sales price and various numeric features included in our analysis.
+
+![Heat Map](./images/heatmap_1.png)
+
+This visualization suggested to us that the most important feature in determining the price of a home is neighbourhood (as captured by postal code). 
+
+![Scatter plot with median price by postal code](./images/scatter-sold-by-pc.png)
+
+The second most important feature appeared to be square footage.
+
+![Scatter plot with sqft](./images/scatter-sqft.png)
+
+Other features that had noticeable correlations with home price were number of bathrooms and garage size as well as number of bedrooms and the year the house was built.
+
+Our final pickled SVM model used the best eight features to predict home sales prices with an R-squared score of ~0.8. 
 
 
 ## Challenges 
 
 Challenges we faced while working through this project included:
-- deciding on a suitable strategy for dealing with outliers
-- feature engineering
 
+- Deciding on a suitable strategy for dealing with outliers. Using the IQR method for trimming outliers resulted in the loss of a significant portion of our dataset. As such, we instead tried to identify the most significant features and trim the outliers from them only. This was an iterative process. However, in the end, by ignoring seemingly unimportant features, we were able to trim a much smaller collection of records than if we'd simply trimmed across the board. 
+- Feature engineering. After loading the JSON data, our resulting dataset had over 50 features. To reduce the dimensionality of the problem, we tried merging features. Also, with regards to location, there were options as to how to turn it into a meaningful feature. We decided to aggregate by postal code, *i.e.,* neighbourhood. Later on, we also used `SelectKBest()` from Scitkit-Learn to further reduce the problem's dimensionality. Trail-and-error suggested that eight features was sufficient to generate a good model.
+- Cross Validation and Data Leakage. As discussed above, we could not use classes from Scikit-Learn to perform cross validation and hyperparameter tuning due to the aggregation that happened when the median-price-by-postal-code feature was engineered. As such, several functions had to be written from scratch.
 
 
 ## Future Goals
-(what would you do if you had more time?)
+- Revisit feature engineering in an effort to find even more truly significant features.
+- Package the entire process as a pipeline and deploy the model.
