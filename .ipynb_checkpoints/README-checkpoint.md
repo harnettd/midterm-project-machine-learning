@@ -37,12 +37,12 @@ In the category of linear regression (perhaps with regularization), we considere
 
 In the SVM category, we considered a linear kernel and an RBF kernel. The linear kernel yielded an adjusted least squares training score of ~0.74 and an adjusted least squares testing score of ~0.76, slightly worse performance than that obtained using linear regression. The KBF kernel, on the other hand, yielded better results than any of the linear regression models: in this case, we found an adjusted least-squares training score of ~0.83 and an adjusted least-squares testing score of ~0.82. To achieve these scores, we uses trial-and-error to select "optimum" values for the two hyperparameters C and gamma.
 
-#### XGBoost
-This model was trained after all the transformation of the dataset. It was trained using XGBRegressor and fitted to predict the scores. The scores predicted are Root Mean Square Error and R-square. On RMSE the scores are 17,777 and 28,168 on both train and test data set respectively. This means that the Media price by postcal code yields error of both 17,777 and 28,168 on training and test data respectively. This can be improveled but considering that we are talking about house prices, it can also be acceptable. 
-
-Adding to above scores, r-square can give us further insights. this metric gives 99 percent and 97 percent on both training and test data respectively. This score suspicious (too good to be true) and one of the reasons can be possible overfitting. Since there are various models tried, this can also mean that other models are better on this dataset. 
 #### Random Forest
-For further analysis, this model scores two metrics: RMSE and R-square. On RMSE, the model scores 18,785 and 51,995 on both training and test respectively. On R-square, it scores 0.98 and 0.92 on both train and test data set respectively. RMSE metric still shows no improvement but using a different metric (R-quare) turns to be a better option. 
+
+
+#### XGBoost
+
+
 
 ### (your step 3)
 
