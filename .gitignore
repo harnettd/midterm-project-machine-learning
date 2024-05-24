@@ -1,2 +1,5 @@
+.DS_Store
+scratch*
+
 __pycache__/
-notebooks/scratch*
+.ipynb_checkpoints/
