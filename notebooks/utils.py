@@ -45,8 +45,8 @@ def print_scores(
 
 
 def run_regression(
-    train: [ndarray, ndarray],
-    test: [ndarray, ndarray],
+    train: list[ndarray, ndarray],
+    test: list[ndarray, ndarray],
     regressor
 ):
     """
