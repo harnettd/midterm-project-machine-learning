@@ -76,10 +76,11 @@ Our final pickled SVM model used the best eight features to predict home sales p
 ## Challenges 
 
 Challenges we faced while working through this project included:
-- Deciding on a suitable strategy for dealing with outliers. Using the IQR method for trimmin outliers 
-- feature engineering
-
+- Deciding on a suitable strategy for dealing with outliers. Using the IQR method for trimming outliers resulted in the loss of a significant portion of our dataset. As such, we instead tried to identify the most significant features and trim the outliers from them only. This was an iterative process. However, in the end, by ignoring seemingly unimportant features, we were able to trim a much smaller collection of records than if we'd simply trimmed across the board. 
+- Feature engineering. After loading the JSON data, our resulting dataset had over 50 features. To reduce the dimensionality of the problem, we tried merging features. Also, with regards to location, there were options as to how to turn this into a meaningful feature. We decided to aggregate by postal code, *i.e.,* neighbourhood as that seemed to us the most sensible way to do it. Later on, we also used `SelectKBest()` from Scitkit-Learn to further reduce the problem's dimensionality. Trail-and-erro suggested that eight features was sufficient to generate a good model.
+- Cross Validation and Data Leakage. As discussed above, we could not use classes from Scikit-Learn to perform cross validation and hyperparameter tuning due to the aggregation that happened when the median-price-by-postal-code feature was engineered. As such, several functions had to be written from scratch.
 
 
 ## Future Goals
-(what would you do if you had more time?)
+- Revisit feature engineering in an effort to find even more truly significant features.
+- Package the entire process as a pipeline and deploy the model.
