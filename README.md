@@ -6,7 +6,7 @@ The goal of this project was to develop and deploy a machine-learning algorithm 
 
 ## Process
 
-![Process Flowchart]('images/ml-midterm-process-dia.drawio.png')
+![Process Flowchart](images/ml-midterm-process-dia.drawio.png)
 
 ### Collect and Clean Data
 
