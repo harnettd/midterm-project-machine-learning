@@ -1,5 +1,6 @@
 .DS_Store
 scratch*
+images/ml-midterm-process-dia.drawio
 
 __pycache__/
 .ipynb_checkpoints/
