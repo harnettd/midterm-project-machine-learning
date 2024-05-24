@@ -163,7 +163,7 @@ def hyperparameter_search(
         trial['score'] = sum(scores) / len(scores)
         trials.append(trial)
     
-    return trials
+    return get_best_model(trials)
 
 
 if __name__ == '__main__':
