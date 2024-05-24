@@ -55,14 +55,28 @@ For hyperparameter tuning, we looped over a collection of hyperparameter setting
 
 
 ## Results
-(fill in how your model performed)
 
+Here, we show a heat map of the correlation matrix between home sales price and various numeric features included in our analysis.
+
+![Heat Map](./images/heatmap_1.png)
+
+This visualization suggested to us that the most important feature in determining the price of a home is neighbourhood (as captured by postal code). 
+
+![Scatter plot with median price by postal code](./images/scatter-sold-by-pc.png)
+
+The second most important feature appeared to be square footage.
+
+![Scatter plot with sqft](./images/scatter-sqft.png)
+
+Other features that had noticeable correlations with home price were number of bathrooms and garage size as well as number of bedrooms and the year the house was built.
+
+Our final pickled SVM model used the best eight features to predict home sales prices with an R-squared score of ~0.8. 
 
 
 ## Challenges 
 
 Challenges we faced while working through this project included:
-- deciding on a suitable strategy for dealing with outliers
+- Deciding on a suitable strategy for dealing with outliers. Using the IQR method for trimmin outliers 
 - feature engineering
 
 
